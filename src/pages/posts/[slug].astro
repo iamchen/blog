@@ -1,0 +1,47 @@
+---
+import Base from "../../layouts/Base.astro";
+import { dateTimeAttr, formatDate } from "../../lib/format";
+import { withBase } from "../../lib/paths";
+import { getPosts } from "../../lib/posts";
+import type { Post } from "../../lib/types";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const home = withBase();
+---
+
+<Base title={post.title} description={post.summary || post.title}>
+  <article class="wrap">
+    <header class="article-header">
+      <a class="back" href={home}>← 全部文章</a>
+      <h1>{post.title}</h1>
+      <p class="meta">
+        <time datetime={dateTimeAttr(post.published)}>{formatDate(post.published)}</time>
+      </p>
+      {
+        post.tags.length > 0 && (
+          <ul class="tags">
+            {post.tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+      {post.summary && <p class="lead">{post.summary}</p>}
+    </header>
+    <div class="post-body" set:html={post.html} />
+  </article>
+</Base>

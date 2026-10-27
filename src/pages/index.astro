@@ -1,0 +1,47 @@
+---
+import Base from "../layouts/Base.astro";
+import { siteConfig } from "../config";
+import { dateTimeAttr, formatDate } from "../lib/format";
+import { withBase } from "../lib/paths";
+import { getPosts } from "../lib/posts";
+
+export const prerender = true;
+
+const posts = await getPosts();
+---
+
+<Base>
+  <div class="wrap">
+    <section class="hero">
+      <p class="kicker">笔记</p>
+      <h1>{siteConfig.title}</h1>
+      <p class="lede">把 Notion 里标成已发布的文字，收成一个安静的静态站点。</p>
+    </section>
+    {
+      posts.length === 0 ? (
+        <p class="empty">还没有已发布的文章。在 Notion 里把 Status 设为 Published 后再构建一次。</p>
+      ) : (
+        <ol class="post-list">
+          {posts.map((post) => (
+            <li>
+              <article>
+                <time datetime={dateTimeAttr(post.published)}>{formatDate(post.published)}</time>
+                <h2>
+                  <a href={withBase(`posts/${post.slug}/`)}>{post.title}</a>
+                </h2>
+                {post.summary && <p class="summary">{post.summary}</p>}
+                {post.tags.length > 0 && (
+                  <ul class="tags">
+                    {post.tags.map((tag) => (
+                      <li>{tag}</li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </div>
+</Base>

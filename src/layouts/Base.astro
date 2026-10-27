@@ -1,0 +1,54 @@
+---
+import { siteConfig } from "../config";
+import { withBase } from "../lib/paths";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = siteConfig.description } = Astro.props;
+const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const year = new Date().getFullYear();
+const home = withBase();
+---
+
+<!doctype html>
+<html lang={siteConfig.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={siteConfig.author} />
+    <meta name="theme-color" content="#f3efe6" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={title ? "article" : "website"} />
+    <meta property="og:locale" content="zh_CN" />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <link rel="icon" href={withBase("favicon.svg")} type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip" href="#content">跳到正文</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href={home}>
+          <span class="mark" aria-hidden="true">i</span>
+          <span class="brand-name">{siteConfig.title}</span>
+        </a>
+      </div>
+    </header>
+    <main id="content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>© {year} {siteConfig.author} · 用 Astro 构建，文章来自 Notion</p>
+      </div>
+    </footer>
+  </body>
+</html>
