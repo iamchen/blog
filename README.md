@@ -68,7 +68,7 @@ NOTION_DATABASE_ID=bebc52b20a0d43639a76a4bef5c76efd
 
 ## GitHub Pages
 
-1. 打开仓库 **Settings → Pages → Build and deployment**，把 **Source** 设为 **GitHub Actions**。
+1. 打开仓库 **Settings → Pages → Build and deployment**，把 **Source** 设为 **GitHub Actions**。在保存这项之前，工作流的部署步骤会失败。保存之后，到 Actions 里重新运行 **Deploy to GitHub Pages**。
 2. 打开 **Settings → Secrets and variables → Actions**，新建两个 Repository secrets：
    - `NOTION_TOKEN`：集成密钥
    - `NOTION_DATABASE_ID`：`bebc52b20a0d43639a76a4bef5c76efd`
